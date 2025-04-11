@@ -318,7 +318,27 @@ if "nav_section" not in st.session_state:
 def navigate_to(section):
     st.session_state.nav_section = section
 
-st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Navigation</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Even those who are considered the most immoral of all sinners can cross over this ocean of material existence by seating themselves in the boat of divine knowledge.</h2>", unsafe_allow_html=True)
+st.markdown("""
+    <div style="text-align: center;">
+        <h3>🎙️ Use Google Assistant</h3>
+        <p>Click the button below to launch Google Assistant on supported Android devices:</p>
+        <a href="intent://assistant.google.com/#Intent;scheme=https;package=com.google.android.googlequicksearchbox;end">
+            <button style="
+                font-size: 20px;
+                padding: 12px 24px;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            ">
+                🎤 Launch Google Assistant
+            </button>
+        </a>
+    </div>
+""", unsafe_allow_html=True)
 
 button_style = """
     <style>
