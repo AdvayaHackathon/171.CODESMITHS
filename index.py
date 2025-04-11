@@ -158,3 +158,32 @@ if mode == "Science Chatbot for Kids":
         with st.chat_message("assistant"):
             st.markdown(response.text)
 #added chats
+else:
+    st.subheader(labels[mode]["edu_advice"])
+
+    category = st.selectbox(labels[mode]["choose_category"], ["", "Primary", "High School", "PUC", "Engineering", "Finance", "MBBS"])
+    user_prompt = st.text_area(labels[mode]["ask_question"])
+
+    if st.button(labels[mode]["get_answer"]):
+        if not user_prompt.strip():
+            st.warning(labels[mode]["warning"])
+        else:
+            with st.spinner(labels[mode]["generating"]):
+                reply = get_gemini_response(user_prompt, category)
+                st.success(labels[mode]["answer"])
+                st.markdown(reply)
+
+
+if "public_key" not in st.session_state:
+    public_key, private_key = paillier.generate_paillier_keypair()
+    st.session_state.public_key = public_key
+    st.session_state.private_key = private_key
+
+if "encrypted_transactions" not in st.session_state:
+    st.session_state.encrypted_transactions = {}
+
+if "transaction_history" not in st.session_state:
+    st.session_state.transaction_history = []
+
+if "wallet" not in st.session_state:
+    st.session_state.wallet = []
