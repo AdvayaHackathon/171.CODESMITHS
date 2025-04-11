@@ -113,3 +113,26 @@ nav_labels = {
         "Logout": "ಲಾಗ್ ಔಟ್"
     }
 }
+#adding labels
+labels = {
+    "English": {
+        "edu_advice": "📚 Get advice in specific education categories",
+        "choose_category": "Choose a Category:",
+        "ask_question": "Ask your question:",
+        "get_answer": "Get Answer",
+        "warning": "Please enter a question.",
+        "generating": "Generating response...",
+        "answer": "Answer:"
+    },
+    "ಕನ್ನಡ": {
+        "edu_advice": "📚 ನಿರ್ದಿಷ್ಟ ಶಿಕ್ಷಣ ವರ್ಗಗಳಲ್ಲಿ ಸಲಹೆ ಪಡೆಯಿರಿ",
+        "choose_category": "ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
+        "ask_question": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ:",
+        "get_answer": "ಉತ್ತರವನ್ನು ಪಡೆಯಿರಿ",
+        "warning": "ದಯವಿಟ್ಟು ಪ್ರಶ್ನೆಯನ್ನು ನಮೂದಿಸಿ.",
+        "generating": "ಉತ್ತರವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+        "answer": "ಉತ್ತರ:"
+    }
+}
+
+
