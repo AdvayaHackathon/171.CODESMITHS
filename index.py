@@ -251,3 +251,350 @@ def check_network_traffic():
     total_network_traffic = bytes_sent + bytes_recv
     return total_network_traffic
 
+network_traffic = check_network_traffic()
+suspicious_activity = False
+if suspicious_activity:
+    st.markdown(
+        '<p style="color:red; text-align:center; font-size:20px; font-weight:bold;">⚠️ Suspicious network activity detected! ⚠️</p>',
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        '<p style="color:green; text-align:center; font-size:20px; font-weight:bold;">✔️ No suspicious activity detected.</p>',
+        unsafe_allow_html=True
+    )
+
+st.write(f"Total Network Traffic: {network_traffic:.2f} MB")
+
+
+st.title("SAHAYOGI – Empowering Rural Education")
+st.write("Welcome to the platform where learning meets innovation for every rural student")
+
+if "nav_section" not in st.session_state:
+    st.session_state.nav_section = "Home"
+
+
+def navigate_to(section):
+    st.session_state.nav_section = section
+
+st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Navigation</h2>", unsafe_allow_html=True)
+
+button_style = """
+    <style>
+    div.stButton > button {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        padding: 0.75em 1.2em;
+        margin-bottom: 0.5em;
+        width: 100%;
+        border-radius: 8px;
+        background-color: orange;
+    }
+    </style>
+"""
+st.sidebar.markdown(button_style, unsafe_allow_html=True)
+
+st.sidebar.header("Navigation")
+nav_map = {
+    "Primary": "Primary",
+    "Higher Studies": "Higher Studies",
+    "Home": "Home",
+    "FAQ's": "FAQ's",
+    "Support": "Support",
+    "Settings": "Settings",
+    "Graph Chart": "Graph Chart",
+    "Spending Analysis": "Spending Analysis",
+    "Encrypted Data": "Encrypted Data",
+    "Wallet": "Wallet",
+    "Credential Encryption": "Credential Encryption", 
+    "Withdraw": "Withdraw", 
+    "Logout": "Logout",
+}
+
+nav_labels_local = nav_labels[mode]
+
+for key, value in nav_map.items():
+    if st.sidebar.button(nav_labels_local[key]):
+        navigate_to(value)
+
+
+
+
+nav_section = st.session_state.nav_section
+
+
+
+if nav_section == "Home":
+    st.header("Home")
+
+    if not st.session_state.user_authenticated:
+        st.subheader("User Authentication")
+        user_password = st.text_input("Enter User Passkey:", type="password")
+
+        if st.button("Authenticate User"):
+            if user_password == "user123":
+                st.session_state.user_authenticated = True
+                st.success("User authenticated successfully!")
+            else:
+                st.error("Invalid passkey! Please try again.")
+
+    if st.session_state.user_authenticated:
+        section = st.selectbox("Select Section", ["User Section", "Admin Section"])
+
+        if section == "User Section":
+            st.subheader("Submit Financial Data")
+
+            st.session_state.user_id = st.text_input("Enter User ID:", value=st.session_state.user_id)
+            st.session_state.pan_no = st.text_input("Enter PAN Number:", value=st.session_state.pan_no)
+            transaction_amount = st.text_input("Enter Transaction Amount (numeric):")
+
+            if not transaction_amount:
+                transaction_amount = '0000'
+
+            current_passkey = get_current_passkey()
+            display_countdown()
+            passkey = st.text_input("Enter Passkey:", type="password")
+
+            if st.button("Encrypt and Submit"):
+                if st.session_state.user_id and st.session_state.pan_no and transaction_amount.replace('.', '', 1).isdigit() and passkey == current_passkey:
+                    encrypted_data = encrypt_data(transaction_amount)
+                    st.session_state.encrypted_transactions[st.session_state.user_id] = encrypted_data
+
+                    st.session_state.transaction_history.append({
+                        "user_id": st.session_state.user_id,
+                        "pan_no": st.session_state.pan_no,
+                        "transaction_amount": transaction_amount,
+                        "status": "Encrypted and stored securely"
+                    })
+
+                    st.session_state.wallet.append({
+                        "amount": float(transaction_amount),
+                        "timestamp": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+                    })
+
+                    st.success("Transaction encrypted and stored securely!")
+                elif passkey != current_passkey:
+                    st.error("Invalid passkey! Please try again.")
+                else:
+                    st.error("Please enter valid transaction data.")
+#HE updated
+            st.subheader("Transaction History")
+            if st.session_state.transaction_history:
+                for idx, transaction in enumerate(st.session_state.transaction_history, 1):
+                    st.write(f"{idx}. User ID: {transaction['user_id']}, PAN No: {transaction['pan_no']}, Amount: {transaction['transaction_amount']}, Status: {transaction['status']}")
+            else:
+                st.write("No transactions submitted yet.")
+
+        elif section == "Admin Section":
+            st.subheader("Admin Panel")
+            admin_password = st.text_input("Enter Admin Access Code:", type="password")
+            if st.button("Access Admin Panel"):
+                if admin_password == "admin123":
+                    st.success("Access granted!")
+                    if st.session_state.encrypted_transactions:
+                        st.write("### Decrypted Financial Transactions")
+                        for user, encrypted_data in st.session_state.encrypted_transactions.items():
+                            try:
+                                decrypted_amount = decrypt_data(encrypted_data)
+                                st.write(f"**User ID:** {user}, **Transaction Amount:** {decrypted_amount}")
+                            except ValueError as e:
+                                st.error(f"Error decrypting data for User ID {user}: {e}")
+                    else:
+                        st.info("No transactions to display.")
+                else:
+                    st.error("Incorrect access code! Access denied.")
+
+# elif nav_section == "Higher Studies":
+#     st.header("🎓 Higher Studies Section")
+#     st.write("This section includes educational guidance for High School, PUC, Engineering, Finance, and MBBS students.")
+
+#     categories = ["High School", "PUC", "Engineering", "Finance", "MBBS"]
+#     selected_category = st.selectbox("Select Category", categories)
+
+#     user_question = st.text_input("Ask your question:")
+#     if st.button("Get Answer"):
+#         if user_question:
+#             with st.spinner("Thinking..."):
+#                 # Use your Gemini API call here
+#                 answer = get_gemini_response(user_question, selected_category)
+#                 st.success("Response:")
+#                 st.write(answer)
+#         else:
+#             st.warning("Please enter a question.")
+
+
+elif nav_section == "Primary":
+    if "page" not in st.session_state:
+        st.session_state.page = "primary"
+
+    if st.session_state.page == "primary":
+        st.header("Primary Section")
+        st.write("Welcome to the Primary Education Content Section.")
+
+        st.markdown("""
+        ### 🧠 Learn Basic Concepts
+        - **Alphabets** (A-Z)
+        - **Numbers** (1-100)
+        - **Colors & Shapes**
+        - **Basic Addition/Subtraction**
+
+        Use this space to make early learning fun and interactive.
+        """)
+
+       
+        st.title("📘 Primary Learning Zone")
+        st.markdown("### ✨ Choose a Language to Learn")
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("🔤 English"):
+                st.session_state.page = "english"
+
+            
+            
+        with col2:
+            if st.button("🌸 Kannada"):
+                st.session_state.page = "kannada"
+        with col3:
+            if st.button("🪔 Hindi"):
+                st.session_state.page = "hindi"
+
+        st.markdown("---")
+        if st.button("🔙 Back to Home"):
+            st.session_state.page = "home"
+
+    elif st.session_state.page == "english":
+        st.title("🔤 English Alphabet Learning")
+        st.markdown("### Click on a letter to learn how to write it")
+
+        letters = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        for i in range(0, len(letters), 6):
+            cols = st.columns(6)
+            for j, col in enumerate(cols):
+                if i + j < len(letters):
+                    letter = letters[i + j]
+                    if col.button(letter, use_container_width=True):
+                        st.session_state.selected_letter = letter
+
+        if "selected_letter" in st.session_state:
+            selected = st.session_state.selected_letter
+            if selected == "Q":
+                st.image(
+                    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.makeagif.com%2Fmedia%2F8-17-2020%2FsR_V2n.gif&f=1&nofb=1&ipt=bdd72401bd797fc4aa9957d80a510da0da4fa2b064424d35475da49e77f15e70",
+                    caption="✍️ How to write 'Q'",
+                    use_column_width=True
+                )
+                st.subheader("🔊 Hear how 'A' sounds")
+                if st.button("▶️ Play Sound for Q"):
+                    audio_file = open("q.mp3", "rb")
+                    audio_bytes = audio_file.read()
+                    st.audio(audio_bytes, format="audio/mp3")
+            elif selected == "A":
+                st.image(
+                    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.makeagif.com%2Fmedia%2F6-02-2021%2FJKYoCQ.gif&f=1&nofb=1&ipt=da40fea9b77b4660dc0b7eca024571f7ae6ba06e5e2e0fc50566fc49ceb0818b",
+                    caption="✍️ How to write 'A'",
+                    use_column_width=True
+                )
+                st.subheader("🔊 Hear how 'A' sounds")
+                if st.button("▶️ Play Sound for A"):
+                    audio_file = open("a.mp3", "rb")
+                    audio_bytes = audio_file.read()
+                    st.audio(audio_bytes, format="audio/mp3")
+
+                
+            else:
+                st.info(f"📝 Animation for letter '{selected}' not available yet.")
+
+        if st.button("🔙 Back to Primary"):
+            st.session_state.page = "primary"
+            st.session_state.selected_letter = None
+
+    elif st.session_state.page == "kannada":
+        st.title("🌸 Kannada Letters")
+        st.markdown("""
+        <div style='font-size: 56px; text-align: center; line-height: 2;'>
+            <strong>ಸ್ವರಗಳು (Vowels)</strong><br>
+            ಅ ಆ ಇ ಈ ಉ ಊ ಋ ೀ ಎ ಏ ಐ ಒ ಓ ಔ ಅಂ ಅಃ<br><br>
+            <strong>ವ್ಯಂಜನಗಳು (Consonants)</strong><br>
+            ಕ ಖ ಗ ಘ ಙ<br>
+            ಚ ಛ ಜ ಝ ಞ<br>
+            ಟ ಠ ಡ ಢ ಣ<br>
+            ತ ಥ ದ ಧ ನ<br>
+            ಪ ಫ ಬ ಭ ಮ<br>
+            ಯ ರ ಲ ವ ಶ ಷ ಸ ಹ ಳ ಕ್ಷ ಜ್ಞ
+        </div>
+        """, unsafe_allow_html=True)
+
+        kannada_letter = st.selectbox("📚 Choose a Kannada letter to learn:", ["", "ಅ", "ಆ"])
+
+        if kannada_letter == "ಅ":
+            st.image(
+                "https://i.makeagif.com/media/5-14-2023/KlfkPj.gif",  # Example Kannada 'ಅ' writing gif
+                caption="✍️ How to write 'ಅ'",
+                use_column_width=True
+            )
+            st.subheader("🔊 Hear how 'ಅ' sounds")
+            if st.button("▶️ Play Sound for ಅ"):
+                audio_file = open("a_kannada.mp3", "rb")  # Ensure this file exists
+                audio_bytes = audio_file.read()
+                st.audio(audio_bytes, format="audio/mp3")
+
+        elif kannada_letter == "ಆ":
+            st.image(
+                "https://i.makeagif.com/media/5-14-2023/gO0aQy.gif",  # Example Kannada 'ಆ' writing gif
+                caption="✍️ How to write 'ಆ'",
+                use_column_width=True
+            )
+            st.subheader("🔊 Hear how 'ಆ' sounds")
+            if st.button("▶️ Play Sound for ಆ"):
+                audio_file = open("aa_kannada.mp3", "rb")  # Ensure this file exists
+                audio_bytes = audio_file.read()
+                st.audio(audio_bytes, format="audio/mp3")
+
+        if st.button("🔙 Back to Primary"):
+            st.session_state.page = "primary"
+
+    elif st.session_state.page == "hindi":
+        st.title("🨔 Hindi Letters")
+        st.markdown("""
+        <div style='font-size: 48px; text-align: center; line-height: 2;'>
+            अ आ इ ई उ ऊ ऋ ए ऐ ओ औ अं अः<br>
+            क ख ग घ ङ च छ ज झ ञ ट ठ ड ढ ण<br>
+            त थ द ध न प फ ब भ म य र ल व श ष स ह
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🔙 Back to Primary"):
+            st.session_state.page = "primary"
+
+
+
+
+
+elif nav_section == "Wallet":
+    st.header("Wallet")
+    st.write("Here you can view your total deposits and transaction history.")
+
+    total_deposit = sum([entry['amount'] for entry in st.session_state.wallet])
+    st.subheader(f"Total Deposited Amount: ₹ {total_deposit:.2f}")
+
+    if st.session_state.wallet:
+        st.write("### Deposit History")
+        for idx, entry in enumerate(st.session_state.wallet, 1):
+            st.write(f"{idx}. Amount: ₹{entry['amount']}, Date: {entry['timestamp']}")
+    else:
+        st.write("No deposits made yet.")
+
+elif nav_section == "FAQ's":
+    st.header("Frequently Asked Questions")
+    st.write("""
+    1. **How do I submit my financial data?**
+       - You can securely submit your financial data through the "User Section" of the platform.
+    2. **What is encryption?**
+       - Encryption is a process that converts data into a secure format to prevent unauthorized access.
+    3. **How do I access the Admin Panel?**
+       - Only authorized users with an admin access code can access the Admin Panel.
+    4. **How is my data protected?**
+       - Your data is encrypted using Paillier homomorphic encryption, ensuring its confidentiality and security.
+    """)
+#upgraded
