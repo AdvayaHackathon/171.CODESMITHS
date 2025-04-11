@@ -187,3 +187,27 @@ if "transaction_history" not in st.session_state:
 
 if "wallet" not in st.session_state:
     st.session_state.wallet = []
+if "last_passkey_change_time" not in st.session_state:
+    st.session_state.last_passkey_change_time = time.time()
+
+if "encryption_method" not in st.session_state:
+    st.session_state.encryption_method = "HE"
+
+if "user_authenticated" not in st.session_state:
+    st.session_state.user_authenticated = False
+
+if "user_id" not in st.session_state:
+    st.session_state.user_id = ""
+
+if "pan_no" not in st.session_state:
+    st.session_state.pan_no = ""
+
+
+def encrypt_data(data):
+    if st.session_state.encryption_method == "HE":
+        encrypted_data = st.session_state.public_key.encrypt(float(data))
+    elif st.session_state.encryption_method == "FFHE":
+        encrypted_data = encrypt_data_fhe(data)
+    return encrypted_data
+
+#added to states
