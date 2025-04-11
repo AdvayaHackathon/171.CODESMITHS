@@ -60,5 +60,100 @@ def play_audio(letter):
     """
     components.html(audio_html, height=100)
 
+def get_gemini_response(prompt, category=None):
+    generic_model = genai.GenerativeModel("gemini-1.5-pro")
+    full_prompt = f"You are an educational advisor. {f'Focus on {category} education.' if category else ''} Answer this: {prompt}"
+    try:
+        response = generic_model.generate_content(full_prompt)
+        return response.text
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# Streamlit UI Setup
+st.set_page_config(page_title="SAHAYOGI", page_icon="🧠", layout="wide")
+
+
+# Mode selector
+mode = st.radio("Language / ಭಾಷೆ", ["English", "ಕನ್ನಡ"], horizontal=True)
+nav_labels = {
+    "English": {
+        "Primary": "Primary",
+        "Higher Studies": "Higher Studies",
+        "Home": "Finance",
+        "FAQ's": "FAQ's",
+        "Support": "Support",
+        "Settings": "Settings",
+        "Graph Chart": "Graph Chart",
+        "Spending Analysis": "Spending Analysis",
+        "Encrypted Data": "Encrypted Data",
+        "Wallet": "Wallet",
+        "Credential Encryption": "Credential Encryption",
+        "Withdraw": "Withdraw",
+        "Logout": "Logout"
+    },
+    "ಕನ್ನಡ": {
+        "Primary": "ಪ್ರಾಥಮಿಕ",
+        "Higher Studies": "ಉನ್ನತ ಅಧ್ಯಯನ",
+        "Home": "ಹಣಕಾಸು",
+        "FAQ's": "ಸಮಸ್ಯೆಗಳು",
+        "Support": "ಬೆಂಬಲ",
+        "Settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+        "Graph Chart": "ಗ್ರಾಫ್ ಚಾರ್ಟ್",
+        "Spending Analysis": "ಖರ್ಚು ವಿಶ್ಲೇಷಣೆ",
+        "Encrypted Data": "ಎನ್ಕ್ರಿಪ್ಟ್ ಡೇಟಾ",
+        "Wallet": "ವಾಲೆಟ್",
+        "Credential Encryption": "ಪ್ರಮಾಣಪತ್ರ ಎನ್ಕ್ರಿಪ್ಷನ್",
+        "Withdraw": "ಹಿಂತೆಗೆದುಕೊಳ್ಳಿ",
+        "Logout": "ಲಾಗ್ ಔಟ್"
+    }
+}
+
+labels = {
+    "English": {
+        "edu_advice": "📚 Get advice in specific education categories",
+        "choose_category": "Choose a Category:",
+        "ask_question": "Ask your question:",
+        "get_answer": "Get Answer",
+        "warning": "Please enter a question.",
+        "generating": "Generating response...",
+        "answer": "Answer:"
+    },
+    "ಕನ್ನಡ": {
+        "edu_advice": "📚 ನಿರ್ದಿಷ್ಟ ಶಿಕ್ಷಣ ವರ್ಗಗಳಲ್ಲಿ ಸಲಹೆ ಪಡೆಯಿರಿ",
+        "choose_category": "ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
+        "ask_question": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ:",
+        "get_answer": "ಉತ್ತರವನ್ನು ಪಡೆಯಿರಿ",
+        "warning": "ದಯವಿಟ್ಟು ಪ್ರಶ್ನೆಯನ್ನು ನಮೂದಿಸಿ.",
+        "generating": "ಉತ್ತರವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+        "answer": "ಉತ್ತರ:"
+    }
+}
+
+
+
+
+# Chat Logic: Science Chatbot
+if mode == "Science Chatbot for Kids":
+    if "science_chat" not in st.session_state:
+        st.session_state.science_chat = science_model.start_chat(history=[])
+
+   
+
+    # Show chat history
+    for msg in st.session_state.science_chat.history:
+        with st.chat_message("user" if msg.role == "user" else "assistant"):
+            st.markdown(msg.parts[0].text)
+
+    # Chat input
+    user_input = st.chat_input("Ask me anything science-y!")
+
+    if user_input:
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        response = st.session_state.science_chat.send_message(user_input)
+
+        with st.chat_message("assistant"):
+            st.markdown(response.text)
 
 
