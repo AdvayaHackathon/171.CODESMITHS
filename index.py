@@ -9,6 +9,13 @@ from cryptography.fernet import Fernet  # For file-based encryption
 import google.generativeai as genai
 from gtts import gTTS
 import streamlit.components.v1 as components
+from googletrans import Translator  # or use any other translator you prefer
+
+translator = Translator()
+
+def translate_to_kannada(text):
+    return translator.translate(text, dest='kn').text
+
 
 
 GOOGLE_API_KEY = "AIzaSyAFpPYDM2ynL6r7KfFQyQnIzYfIsxtiZ4I"
@@ -170,6 +177,9 @@ else:
         else:
             with st.spinner(labels[mode]["generating"]):
                 reply = get_gemini_response(user_prompt, category)
+                if mode == "ಕನ್ನಡ":
+                    reply = translate_to_kannada(reply)s
+
                 st.success(labels[mode]["answer"])
                 st.markdown(reply)
 
@@ -529,7 +539,7 @@ elif nav_section == "Primary":
 
         if kannada_letter == "ಅ":
             st.image(
-                "https://i.makeagif.com/media/5-14-2023/KlfkPj.gif",  # Example Kannada 'ಅ' writing gif
+                "6b31f531f97a45998363f4f7425f4ade.gif",  # Example Kannada 'ಅ' writing gif
                 caption="✍️ How to write 'ಅ'",
                 use_column_width=True
             )
@@ -541,7 +551,7 @@ elif nav_section == "Primary":
 
         elif kannada_letter == "ಆ":
             st.image(
-                "https://i.makeagif.com/media/5-14-2023/gO0aQy.gif",  # Example Kannada 'ಆ' writing gif
+                "cc8bcca7f45442cc9aef9952cf9e449f.gif",  # Example Kannada 'ಆ' writing gif
                 caption="✍️ How to write 'ಆ'",
                 use_column_width=True
             )
