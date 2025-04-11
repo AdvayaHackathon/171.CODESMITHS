@@ -29,7 +29,7 @@ safety_settings = [
     {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
 ]
-
+#hi
 # Science-focused model setup
 science_model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",
