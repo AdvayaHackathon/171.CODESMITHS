@@ -355,7 +355,8 @@ if "nav_section" not in st.session_state:
 def navigate_to(section):
     st.session_state.nav_section = section
 
-st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Even those who are considered the most immoral of all sinners can cross over this ocean of material existence by seating themselves in the boat of divine knowledge.</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Even those who are considered the most immoral of all sinners can cross over this ocean of material existence by seating themselves in the boat of divine knowledge.<br><br>Micro challenge:Can you name five objects around you that start with the first five English letters?</h2>", unsafe_allow_html=True)
+
 st.markdown("""
     <div style="text-align: center;">
         <h3>🎙️ Use Google Assistant</h3>
