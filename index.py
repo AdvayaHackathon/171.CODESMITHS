@@ -211,3 +211,43 @@ def encrypt_data(data):
     return encrypted_data
 
 #added to states
+def decrypt_data(encrypted_data):
+    if st.session_state.encryption_method == "HE":
+        return st.session_state.private_key.decrypt(encrypted_data)
+    elif st.session_state.encryption_method == "FFHE":
+        return decrypt_data_fhe(encrypted_data)
+
+
+def encrypt_data_fhe(data):
+    return data
+
+
+def decrypt_data_fhe(encrypted_data):
+    return encrypted_data
+
+
+def get_current_passkey():
+    elapsed_time = time.time() - st.session_state.last_passkey_change_time
+    if elapsed_time > 300:
+        st.session_state.last_passkey_change_time = time.time()
+        return "sit4321" if (int(elapsed_time / 300) % 2 == 1) else "sit1234"
+    else:
+        return "sit1234" if (int(elapsed_time / 300) % 2 == 0) else "sit4321"
+
+
+def display_countdown():
+    elapsed_time = time.time() - st.session_state.last_passkey_change_time
+    remaining_time = 300 - elapsed_time
+    if remaining_time > 0:
+        st.write(f"Time until next passkey change: {int(remaining_time)} seconds")
+    else:
+        st.write("Passkey has been updated!")
+
+
+def check_network_traffic():
+    network_stats = psutil.net_io_counters()
+    bytes_sent = network_stats.bytes_sent / (1024 * 1024)
+    bytes_recv = network_stats.bytes_recv / (1024 * 1024)
+    total_network_traffic = bytes_sent + bytes_recv
+    return total_network_traffic
+
