@@ -44,6 +44,19 @@ science_model = genai.GenerativeModel(
         "can be related to the real world with observations and experiments."
     )
 )
+def read_aloud_button():
+    read_aloud_html = """
+    <script>
+        function readScreenText() {
+            const allText = document.body.innerText;
+            const utterance = new SpeechSynthesisUtterance(allText);
+            speechSynthesis.speak(utterance);
+        }
+    </script>
+    <button onclick="readScreenText()" style="font-size:20px; padding:10px 20px; background-color:lightblue; border:none; border-radius:8px;">🔈 Read Aloud</button>
+    """
+    components.html(read_aloud_html, height=100)
+
 
 def play_audio(letter):
     audio_html = f"""
@@ -269,6 +282,7 @@ st.write(f"Total Network Traffic: {network_traffic:.2f} MB")
 
 st.title("SAHAYOGI – Empowering Rural Education")
 st.write("Welcome to the platform where learning meets innovation for every rural student")
+read_aloud_button()
 
 if "nav_section" not in st.session_state:
     st.session_state.nav_section = "Home"
