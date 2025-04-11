@@ -9,9 +9,13 @@ from cryptography.fernet import Fernet  # For file-based encryption
 import google.generativeai as genai
 from gtts import gTTS
 import streamlit.components.v1 as components
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.message import EmailMessage
+import base64
 
-
-GOOGLE_API_KEY = "AIzaSyCdztbTcaRY1Immw-uaL0VWobd0ds9BmuM"
+GOOGLE_API_KEY = "AIzaSyDDmTosHLLulk4lId8Xj1LFBWh-OyjSci0"
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Model configuration
@@ -53,14 +57,14 @@ def read_aloud_button():
             speechSynthesis.speak(utterance);
         }
     </script>
-    <button onclick="readScreenText()" style="font-size:20px; padding:10px 20px; background-color:lightblue; border:none; border-radius:8px;">🔈 Read Aloud</button>
+    <button onclick="readScreenText()" style="font-size:20px; padding:10px 20px; background-color:lightblue; border:none; border-radius:8px;">🔈 SOS</button>
     """
     components.html(read_aloud_html, height=100)
 
 
 def play_audio(letter):
     audio_html = f"""
-    <audio id="{letter}_audio" src="audio/{letter.lower()}.mp3"></audio>
+    <audio id="{letter}_audio" src="/static/police-siren-sound-effect-317645.mp3"></audio>
     <script>
         const button = document.getElementById("{letter}_button");
         if (button) {{
@@ -93,7 +97,30 @@ st.set_page_config(page_title="SAHAYOGI", page_icon="🧠", layout="wide")
 
 
 # Mode selector
-mode = st.radio("Language / ಭಾಷೆ", ["English", "ಕನ್ನಡ"], horizontal=True)
+mode = st.radio("Language / ಭಾಷೆ", ["English", "ಕನ್ನಡ", "E-book"], horizontal=True)
+
+if mode == "E-book":
+    st.markdown("### 📘 E-book Viewer")
+
+    # Read the local PDF file
+    file_path = "IEEE.pdf"
+    with open(file_path, "rb") as f:
+        pdf_data = f.read()
+        base64_pdf = base64.b64encode(pdf_data).decode("utf-8")
+
+    # Correct iframe with base64-encoded PDF using data URI
+    pdf_display = f'''
+        <iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>
+    '''
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
+    # Download button
+    st.download_button(
+        label="📥 Download E-book",
+        data=pdf_data,
+        file_name="ebook.pdf",
+        mime="application/pdf"
+    )
 nav_labels = {
     "English": {
         "Primary": "Primary",
@@ -131,7 +158,7 @@ labels = {
     "English": {
         "edu_advice": "📚 Get advice in specific education categories",
         "choose_category": "Choose a Category:",
-        "ask_question": "Ask your question[AI SUMMARIZER]:",
+        "ask_question": "Career Guidance / real time study evalution",
         "get_answer": "Get Answer",
         "warning": "Please enter a question.",
         "generating": "Generating response...",
@@ -312,6 +339,7 @@ st.sidebar.header("Navigation")
 nav_map = {
     "Primary": "Primary",
     "Higher Studies": "Higher Studies",
+    
     "Home": "Home",
     "FAQ's": "FAQ's",
     "Support": "Support",
@@ -600,16 +628,37 @@ elif nav_section == "Wallet":
         st.write("No deposits made yet.")
 
 elif nav_section == "FAQ's":
-    st.header("Frequently Asked Questions")
+    st.header("Heath and Hygiene")
     st.write("""
-    1. **How do I submit my financial data?**
-       - You can securely submit your financial data through the "User Section" of the platform.
-    2. **What is encryption?**
-       - Encryption is a process that converts data into a secure format to prevent unauthorized access.
-    3. **How do I access the Admin Panel?**
-       - Only authorized users with an admin access code can access the Admin Panel.
-    4. **How is my data protected?**
-       - Your data is encrypted using Paillier homomorphic encryption, ensuring its confidentiality and security.
+    1. Personal Hygiene – Bathe daily to keep your body clean and odor-free.
+
+2. Oral Hygiene – Brush twice a day and floss regularly to prevent tooth decay.
+
+3. Hand Hygiene – Wash hands before eating and after using the toilet.
+
+4. Nail Hygiene – Keep nails trimmed and clean to avoid germs and infections.
+
+5. Hair Care – Wash hair regularly to avoid lice and dandruff.
+
+6. Foot Hygiene – Clean feet daily and wear breathable shoes to prevent fungus.
+
+7. Clothing Hygiene – Wear clean clothes and change undergarments daily.
+
+8. Menstrual Hygiene – Use clean sanitary products and change them regularly.
+
+9. Toilet Hygiene – Always flush and wash hands after using the restroom.
+
+10. Food Hygiene – Eat fresh, well-cooked food and avoid uncovered street food.
+
+11. Water Hygiene – Drink clean, filtered or boiled water to prevent diseases.
+
+12. Home Hygiene – Keep living spaces clean, dust-free, and well-ventilated.
+
+13. Waste Management – Dispose of garbage properly and segregate waste.
+
+14. Sleep Hygiene – Maintain regular sleep patterns and get enough rest.
+
+15. Mental Hygiene – Practice stress management, meditation, and stay positive.
     """)
 #upgraded
 elif nav_section == "Support":
