@@ -1,3 +1,4 @@
+#for BGSCET hackathon by team codesmith...Had a wonderfull experiencespo
 import streamlit as st
 from phe import paillier
 import time
@@ -60,6 +61,11 @@ def play_audio(letter):
     """
     components.html(audio_html, height=100)
 
+
+
+
+
+# 🧠 Generic educational model for category-based advice
 def get_gemini_response(prompt, category=None):
     generic_model = genai.GenerativeModel("gemini-1.5-pro")
     full_prompt = f"You are an educational advisor. {f'Focus on {category} education.' if category else ''} Answer this: {prompt}"
@@ -107,53 +113,3 @@ nav_labels = {
         "Logout": "ಲಾಗ್ ಔಟ್"
     }
 }
-
-labels = {
-    "English": {
-        "edu_advice": "📚 Get advice in specific education categories",
-        "choose_category": "Choose a Category:",
-        "ask_question": "Ask your question:",
-        "get_answer": "Get Answer",
-        "warning": "Please enter a question.",
-        "generating": "Generating response...",
-        "answer": "Answer:"
-    },
-    "ಕನ್ನಡ": {
-        "edu_advice": "📚 ನಿರ್ದಿಷ್ಟ ಶಿಕ್ಷಣ ವರ್ಗಗಳಲ್ಲಿ ಸಲಹೆ ಪಡೆಯಿರಿ",
-        "choose_category": "ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
-        "ask_question": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ:",
-        "get_answer": "ಉತ್ತರವನ್ನು ಪಡೆಯಿರಿ",
-        "warning": "ದಯವಿಟ್ಟು ಪ್ರಶ್ನೆಯನ್ನು ನಮೂದಿಸಿ.",
-        "generating": "ಉತ್ತರವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
-        "answer": "ಉತ್ತರ:"
-    }
-}
-
-
-
-
-# Chat Logic: Science Chatbot
-if mode == "Science Chatbot for Kids":
-    if "science_chat" not in st.session_state:
-        st.session_state.science_chat = science_model.start_chat(history=[])
-
-   
-
-    # Show chat history
-    for msg in st.session_state.science_chat.history:
-        with st.chat_message("user" if msg.role == "user" else "assistant"):
-            st.markdown(msg.parts[0].text)
-
-    # Chat input
-    user_input = st.chat_input("Ask me anything science-y!")
-
-    if user_input:
-        with st.chat_message("user"):
-            st.markdown(user_input)
-
-        response = st.session_state.science_chat.send_message(user_input)
-
-        with st.chat_message("assistant"):
-            st.markdown(response.text)
-
-
