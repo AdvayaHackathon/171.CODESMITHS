@@ -135,4 +135,26 @@ labels = {
     }
 }
 
+if mode == "Science Chatbot for Kids":
+    if "science_chat" not in st.session_state:
+        st.session_state.science_chat = science_model.start_chat(history=[])
 
+   
+
+    # Show chat history
+    for msg in st.session_state.science_chat.history:
+        with st.chat_message("user" if msg.role == "user" else "assistant"):
+            st.markdown(msg.parts[0].text)
+
+    # Chat input
+    user_input = st.chat_input("Ask me anything science-y!")
+
+    if user_input:
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        response = st.session_state.science_chat.send_message(user_input)
+
+        with st.chat_message("assistant"):
+            st.markdown(response.text)
+#added chats
