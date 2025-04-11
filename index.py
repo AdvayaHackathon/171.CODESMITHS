@@ -357,26 +357,59 @@ def navigate_to(section):
 
 st.sidebar.markdown("<h2 style='text-align: center;'>🔍 Even those who are considered the most immoral of all sinners can cross over this ocean of material existence by seating themselves in the boat of divine knowledge.<br><br>Micro challenge:Can you name five objects around you that start with the first five English letters?</h2>", unsafe_allow_html=True)
 
-st.markdown("""
-    <div style="text-align: center;">
-        <h3>🎙️ Use Google Assistant</h3>
-        <p>Click the button below to launch Google Assistant on supported Android devices:</p>
-        <a href="intent://assistant.google.com/#Intent;scheme=https;package=com.google.android.googlequicksearchbox;end">
-            <button style="
-                font-size: 20px;
-                padding: 12px 24px;
-                background-color: #4285F4;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            ">
-                🎤 Launch Google Assistant
-            </button>
-        </a>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown("## 🎙️ Speak to Ask a Question")
+
+# Embed the speech-to-text HTML + JavaScript
+components.html("""
+  <html>
+    <body>
+      <div style="text-align: center;">
+        <button onclick="startListening()" style="
+            font-size: 20px;
+            padding: 12px 24px;
+            background-color: #34A853;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          🎤 Speak Now
+        </button>
+        <p id="result" style="font-size: 18px; margin-top: 20px;"></p>
+      </div>
+
+      <script>
+        function startListening() {
+          const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+          recognition.lang = 'en-US';
+          recognition.interimResults = false;
+          recognition.maxAlternatives = 1;
+
+          recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('result').innerText = "🗣️ You said: " + transcript;
+
+            // Append the spoken text to the URL query string
+            const newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + '?text=' + encodeURIComponent(transcript);
+            window.location.href = newURL;
+          };
+
+          recognition.onerror = function(event) {
+            document.getElementById('result').innerText = " Error: " + event.error;
+          };
+
+          recognition.start();
+        }
+      </script>
+    </body>
+  </html>
+""", height=300)
+
+# Use the new st.query_params
+spoken_text = st.query_params.get("text", "")
+
+if spoken_text:
+    st.success(f"✅ You said: {spoken_text}")
 
 button_style = """
     <style>
