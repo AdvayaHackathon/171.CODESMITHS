@@ -11,7 +11,7 @@ from gtts import gTTS
 import streamlit.components.v1 as components
 
 
-GOOGLE_API_KEY = "AIzaSyAFpPYDM2ynL6r7KfFQyQnIzYfIsxtiZ4I"
+GOOGLE_API_KEY = "AIzaSyCdztbTcaRY1Immw-uaL0VWobd0ds9BmuM"
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Model configuration
@@ -29,7 +29,7 @@ safety_settings = [
     {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
 ]
-#hi
+
 # Science-focused model setup
 science_model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",
@@ -131,7 +131,7 @@ labels = {
     "English": {
         "edu_advice": "📚 Get advice in specific education categories",
         "choose_category": "Choose a Category:",
-        "ask_question": "Ask your question:",
+        "ask_question": "Ask your question[AI SUMMARIZER]:",
         "get_answer": "Get Answer",
         "warning": "Please enter a question.",
         "generating": "Generating response...",
@@ -727,7 +727,7 @@ elif nav_section == "Credential Encryption":
 
     if uploaded_file:
         content = uploaded_file.read().decode("utf-8")
-        key = Fernet.generate_key()  # Generate a key for file encryption
+        key = Fernet.generate_key()  
         cipher_suite = Fernet(key)
         encrypted_credentials = cipher_suite.encrypt(content.encode())
 
