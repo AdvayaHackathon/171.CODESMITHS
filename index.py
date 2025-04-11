@@ -598,3 +598,136 @@ elif nav_section == "FAQ's":
        - Your data is encrypted using Paillier homomorphic encryption, ensuring its confidentiality and security.
     """)
 #upgraded
+elif nav_section == "Support":
+    st.header("Support")
+    st.write("For assistance with the platform, please contact us at the following:")
+    st.write("Email: support@secureplatform.com")
+    st.write("Phone: +1-234-567-890")
+    st.write("Our team is available 24/7 to assist you.")
+
+    user_input = st.radio("Choose a topic:", ("Investment", "Deposition"))
+
+    if user_input == "Investment":
+        st.write("""
+        **Investment** involves allocating money into financial instruments with the expectation of generating returns over time. Common investment options include stocks, bonds, real estate, and mutual funds. By investing, individuals aim to grow their wealth, achieve financial goals, and beat inflation. It's important to diversify investments and understand the associated risks. A well-planned investment strategy can help achieve long-term financial stability.
+        """)
+
+    elif user_input == "Deposition":
+        st.write("""
+        **Deposition** refers to the act of placing or depositing money into a secure account, such as a bank account or savings account. It allows individuals to safeguard their funds and earn interest over time. Depositing money is a safe way to preserve capital while earning a small return through interest. Deposits are generally low-risk investments, offering liquidity and security for the depositor's funds.
+        """)
+
+elif nav_section == "Withdraw":
+    st.header("Withdraw Funds")
+    st.write("Here, you can withdraw funds from your wallet.")
+
+    if st.session_state.wallet:
+        total_balance = sum([entry['amount'] for entry in st.session_state.wallet])
+        st.subheader(f"Available Balance: ₹ {total_balance:.2f}")
+
+        withdraw_amount = st.number_input("Enter Amount to Withdraw:", min_value=0.0, max_value=total_balance, step=0.01)
+
+        if st.button("Confirm Withdrawal"):
+            if withdraw_amount <= total_balance:
+                st.session_state.wallet.append({
+                    "amount": -withdraw_amount,
+                    "timestamp": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+                })
+                st.success(f"The amount will be delivered within 24 hours, Withdraw request added ₹ {withdraw_amount:.2f}. Remaining Balance: ₹ {total_balance - withdraw_amount:.2f}")
+            else:
+                st.error("Insufficient balance!")
+    else:
+        st.write("No funds available in your wallet.")
+
+
+elif nav_section == "Settings":
+    st.header("Settings")
+    st.write("Here, you can manage your account settings.")
+
+    encryption_method = st.radio(
+        "Select Encryption Method",
+        options=["HE", "FFHE"],
+        index=0 if st.session_state.encryption_method == "HE" else 1
+    )
+    if encryption_method != st.session_state.encryption_method:
+        st.session_state.encryption_method = encryption_method
+        st.success(f"Switched to {encryption_method} encryption method.")
+
+elif nav_section == "Graph Chart":
+    st.header("Transaction Chart")
+    st.write("Here is a graphical representation of transaction amounts over time.")
+
+    transaction_amounts = [float(transaction['transaction_amount']) for transaction in st.session_state.transaction_history]
+    transaction_times = [time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) for _ in st.session_state.transaction_history]
+
+    if transaction_amounts:
+        fig, ax = plt.subplots()
+        ax.bar(transaction_times, transaction_amounts, color='skyblue')
+        ax.set_xlabel('Date and Time')
+        ax.set_ylabel('Transaction Amount')
+        ax.set_title('Transaction Amounts Over Time')
+        st.pyplot(fig)
+    else:
+        st.write("No transactions to display in the graph.")
+
+elif nav_section == "Spending Analysis":
+    st.header("Spending Analysis")
+    st.write("Here, you can analyze your spending patterns.")
+
+    if st.session_state.wallet:
+        total_spent = sum([entry['amount'] for entry in st.session_state.wallet])
+        st.subheader(f"Total Spent: ₹ {total_spent:.2f}")
+
+        spending_distribution = [entry['amount'] for entry in st.session_state.wallet]
+        spending_labels = [f"Transaction {i+1}" for i in range(len(spending_distribution))]
+
+        fig, ax = plt.subplots()
+        ax.plot(spending_labels, spending_distribution, marker='o', color='orange', linestyle='-', linewidth=2)
+        ax.set_xlabel('Transaction')
+        ax.set_ylabel('Amount (₹)')
+        ax.set_title('Spending Distribution Over Time')
+        ax.grid(True)
+        st.pyplot(fig)
+
+        st.write("### Detailed Spending Table")
+        st.table(st.session_state.wallet)
+
+    else:
+        st.write("No spending data available.")
+
+elif nav_section == "Encrypted Data":
+    st.header("Encrypted Transaction Data")
+    st.write("Here is the encrypted data for each transaction.")
+
+    if st.session_state.encrypted_transactions:
+        for user_id, encrypted_data in st.session_state.encrypted_transactions.items():
+            st.write(f"**User ID:** {user_id}, Encrypted Amount: {encrypted_data.ciphertext()}")
+    else:
+        st.write("No encrypted transactions yet.")
+
+elif nav_section == "Credential Encryption":
+    st.header("Credential Encryption")
+    st.write("Upload a text file containing user credentials to encrypt them.")
+
+    uploaded_file = st.file_uploader("Upload Credential File", type=["txt"])
+
+    if uploaded_file:
+        content = uploaded_file.read().decode("utf-8")
+        key = Fernet.generate_key()  # Generate a key for file encryption
+        cipher_suite = Fernet(key)
+        encrypted_credentials = cipher_suite.encrypt(content.encode())
+
+        st.write("Encrypted Credentials:")
+        st.text(encrypted_credentials.decode())
+
+elif nav_section == "Logout":
+    st.header("Logout")
+    st.write("You have successfully logged out.")
+
+    st.session_state.user_authenticated = False
+    st.session_state.user_id = ""
+    st.session_state.pan_no = ""
+    st.session_state.encrypted_transactions = {}
+    st.session_state.transaction_history = []
+    st.session_state.wallet = []
+#all tabs done
