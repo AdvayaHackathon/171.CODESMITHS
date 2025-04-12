@@ -1,4 +1,4 @@
-#for BGSCET hackathon by team codesmith...Had a wonderfull experiencespo
+#for BGSCET hackathon by team CODESMITHS...Had a wonderfull experience
 import streamlit as st
 from phe import paillier
 import time
@@ -266,7 +266,7 @@ if "wallet" not in st.session_state:
     st.session_state.wallet = []
 if "last_passkey_change_time" not in st.session_state:
     st.session_state.last_passkey_change_time = time.time()
-
+#used timer sequence
 if "encryption_method" not in st.session_state:
     st.session_state.encryption_method = "HE"
 
